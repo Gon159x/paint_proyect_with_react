@@ -3,6 +3,7 @@ import {
   intermediateCalculations,
   MatrixIndexs,
 } from '../../utils/matrixFunctions';
+import { useLastMouseButton } from '../../context/MouseContext';
 
 type Params = {
   // definir parámetros del hook
@@ -15,7 +16,7 @@ type Params = {
  * @param {Params} params - Parámetros del hook
  * @returns {{ state: State, setState: React.Dispatch<React.SetStateAction<State>> }}
  */
-export function useCanvasLogic({ selectedColorRef }: Params) {
+export function useCanvas({ selectedColorRef }: Params) {
   //Estados de celdas
   const [globalCeilsColors, setGlobalCeilsColors] = useState<string[][]>(
     Array.from({ length: 0 }).map((_) => {
@@ -24,6 +25,8 @@ export function useCanvasLogic({ selectedColorRef }: Params) {
   );
 
   const mouseDown = useRef(false);
+
+  const lastButtonClicked = useLastMouseButton();
 
   const setMouseDown = useCallback((value: boolean) => {
     mouseDown.current = value;
@@ -68,6 +71,9 @@ export function useCanvasLogic({ selectedColorRef }: Params) {
   // Funcion memoizada para optimizar el re-renderizado de los componentes y que funciona para cambiar el color de las celdas
   const handleCeilClicked = useCallback((row: number, col: number) => {
     // console.log('Hola', row, col, color);
+    const lastClick = lastButtonClicked();
+    if (lastClick === 2) return;
+
     setGlobalCeilsColors((prevState) => {
       const prevStateCopy = [...prevState];
       const prevStateRowCopy = [...prevStateCopy[row]];
@@ -83,7 +89,8 @@ export function useCanvasLogic({ selectedColorRef }: Params) {
 
   const handleCeilEntered = useCallback((row: number, col: number) => {
     // console.log('Hola', row, col, color);
-    if (!mouseDown.current) {
+    const lastClick = lastButtonClicked();
+    if (!mouseDown.current || lastClick === 2) {
       lastCeilPainted.current = null;
       return;
     }

@@ -1,5 +1,6 @@
 import './App.css';
 import { Lienzo } from './components/Lienzo/Lienzo';
+import { MouseContextProvider } from './context/MouseContext';
 
 // Todo hacer readme con mis palabras
 // TODO agregar boton de ir a github con una contraseña
@@ -8,7 +9,9 @@ import { Lienzo } from './components/Lienzo/Lienzo';
 function App() {
   return (
     <>
-      <Lienzo />
+      <MouseContextProvider>
+        <Lienzo />
+      </MouseContextProvider>
     </>
   );
 }
