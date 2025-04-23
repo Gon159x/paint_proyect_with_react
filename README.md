@@ -1,54 +1,101 @@
-# React + TypeScript + Vite
+# Mini Paint con React + Tailwind – Prueba Técnica Front-End Senior
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este proyecto fue desarrollado como parte de una **prueba técnica** para una posición de _Desarrollador Front-End Senior_. El objetivo era construir una aplicación web interactiva tipo “paint”, basada en una grilla de celdas.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🎯 Objetivo del test
 
-## Expanding the ESLint configuration
+> Implementar una red de celdas cuadradas (100 columnas por pantalla completa) que permita dibujar imágenes simples:
+>
+> - Click izquierdo activa o desactiva la celda.
+> - Click derecho despliega un selector de color personalizado.
+> - Debe permitir pintar arrastrando el mouse.
+> - No debe generar scroll vertical: toda la grilla se ajusta al alto visible.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 🧠 Decisiones técnicas
+
+Aunque una opción natural para este tipo de UI podría haber sido usar `<canvas>` o jQuery (permitidos por las bases del test), decidí **usar React y TailwindCSS** para:
+
+- Mostrar mi dominio de React + Tailwind que es lo que busca la posicion.
+- Aplicar principios de eficiencia en el renderizado, incluso con **más de 5.000 celdas en pantalla**.
+- Diseñar el código pensando en escalabilidad y mantenimiento.
+- Trabaje utilizando gitflow
+
+### 🔍 Enfoque en performance
+
+El proyecto está optimizado para un uso intensivo de celdas, con estrategias como:
+
+- Separación inteligente de estado y renderizado.
+- Componentes livianos y memoizados donde corresponde.
+- Renderizado reactivo y controlado para evitar cuellos de botella.
+
+Podés revisar el código para ver más detalles sobre cómo se abordaron estas optimizaciones.
+
+---
+
+## 🛠️ Tecnologías utilizadas
+
+- **React 19** + **Vite 6**
+- **TypeScript 5**
+- **TailwindCSS 4**
+- **React Colorful** para el selector de color.
+- **Lucide Icons** para íconos SVG modernos.
+- Linter con **ESLint** y plugins para React y hooks.
+
+---
+
+## 🚀 Cómo correr el proyecto
+
+1. Cloná el repositorio:
+
+```bash
+git clone https://github.com/tu-usuario/proyecto-paint.git
+cd proyecto-paint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Instalá las dependencias:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm install
 ```
+
+3. Iniciá el servidor de desarrollo:
+
+```bash
+npm run dev
+```
+
+4. También podés compilarlo con:
+
+```bash
+npm run build
+```
+
+5. O ver la app compilada localmente con:
+
+```bash
+npm run preview
+```
+
+---
+
+## 📁 Estructura del proyecto
+
+- `src/components`: Componentes como `Cell`, `ColorPicker`.
+- `src/context`: estados globales.
+- `src/utils`: Helpers y funciones auxiliares.
+
+---
+
+## ✅ Estado actual
+
+Funcionalidades completas según requisitos del test. Código modular, tipado, y optimizado.
+
+---
+
+## 🤖 Créditos
+
+_Readme creado con asistencia de [ChatGPT](https://chat.openai.com) para claridad, estructura y estilo._
