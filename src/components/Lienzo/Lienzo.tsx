@@ -18,9 +18,6 @@ type Props = {
  * @returns {JSX.Element}
  */
 
-// TODO crear boton de limpiar
-// TODO cambiar cursor
-
 export function Lienzo({}: Props): JSX.Element {
   // Hago custom hooks para cumplir de cierta forma con el patron hook/presentacional para division de responsabilidades
 
@@ -50,7 +47,7 @@ export function Lienzo({}: Props): JSX.Element {
     <div
       onClick={handleClicker}
       onContextMenu={handleContextMenu}
-      className="z-0 h-[100vh] overflow-hidden w-[100vw]"
+      className="z-0 h-[100vh] overflow-hidden w-[100vw] cursor-crosshair"
       onMouseDown={() => setMouseDown(true)}
       onMouseUp={() => setMouseDown(false)}
       // onMouseLeave={(e) => console.log('Mouse leave--->', e)}
@@ -64,7 +61,7 @@ export function Lienzo({}: Props): JSX.Element {
             {row.map((color: string, colIndex: number) => {
               return (
                 <Ceil
-                  color={color} // TODO: Ver de sacarlo de alguna forma o renombrarlo a "initial color" o algo por el estilo -> ver la logica por detras y encontrar un nombre mas apropiado
+                  color={color}
                   onClick={handleCeilClicked}
                   row={rowIndex}
                   col={colIndex}
@@ -90,7 +87,11 @@ export function Lienzo({}: Props): JSX.Element {
           document.body
         )}
 
-      <FloatingButton onClick={() => resetCeilsColors()} position="bottom-left">
+      <FloatingButton
+        pr={'16px'}
+        onClick={() => resetCeilsColors()}
+        position="bottom-left"
+      >
         Limpiar
       </FloatingButton>
     </div>
