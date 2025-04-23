@@ -79,6 +79,7 @@ export function useCanvas({ selectedColorRef }: Params) {
       const saved = localStorage.getItem('globalCeilsColors');
       // console.log('Saved--->', saved);
       if (saved) {
+        console.log("Si ya se que hay un bug aca pero ya no me da la cabeza para resolverlo por hoy jaj")
         newGlobalColors = JSON.parse(saved);
       } else {
         newGlobalColors = globalCeilsColors;
