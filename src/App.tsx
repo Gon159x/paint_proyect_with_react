@@ -3,6 +3,7 @@ import { GithubFloatingButton } from './components/GithubFloatingButton';
 import { Lienzo } from './components/Lienzo/Lienzo';
 import { MouseContextProvider } from './context/MouseContext';
 
+// TODO agregar la documentacion de los componentes y los hooks
 function App() {
   return (
     <>
