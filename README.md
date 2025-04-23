@@ -3,6 +3,11 @@
 Este proyecto fue desarrollado como parte de una **prueba técnica** para una posición de _Desarrollador Front-End Senior_. El objetivo era construir una aplicación web interactiva tipo “paint”, basada en una grilla de celdas.
 
 ---
+## Pagina del deploy
+
+https://paint-proyect-with-react.vercel.app/
+
+---
 
 ## 🎯 Objetivo del test
 
