@@ -4,6 +4,7 @@ import {
   MatrixIndexs,
 } from '../../utils/matrixFunctions';
 import { useLastMouseButton } from '../../context/MouseContext';
+import { debounce } from '../../utils/debounce';
 
 type Params = {
   // definir parámetros del hook
@@ -44,34 +45,80 @@ export function useCanvas({ selectedColorRef }: Params) {
 
   // Cada vez que se re-renderiza el componente recalculo la cantidad de filas
   // TODO extraer la logica de calculos para ponerla en la carpeta utils y que el codigo sea mas claro
+  const prevViewPortHeight = useRef<number>(window.innerHeight);
+
+  const calculateTotalCeilsRef = useRef<() => void>(() => {});
+
+  // Bueno, esto esta parcialmente resuelto, aun en ciertas secuencias de redimencionamiento
+  // se pierden colores del localstorage, pero esto tiene que ver con la forma en la
+  // que se almacena el localstorage de forma asincronica con tantos datos
+  // igual creo que si lo pienso un poco mas podria resolver este tema
+  const debouncedResize = useRef(
+    debounce(() => {
+      calculateTotalCeilsRef.current();
+    }, 100)
+  ).current;
+
   const calculateTotalCeils = useCallback(() => {
     const extraVerticalCeils = 3;
     const vw = window.innerWidth / 100;
     const verticalCeilsTotalAux =
       Math.ceil(window.innerHeight / vw) + extraVerticalCeils;
 
-    const globalRowSize = globalCeilsColors.length;
+    const prevHeight = prevViewPortHeight.current;
+    const windowGrowing = window.innerHeight > prevHeight;
+    prevViewPortHeight.current = window.innerHeight;
+
+    let newGlobalColors: string[][] = [...globalCeilsColors];
+
+    // console.log('New global colors--->', newGlobalColors);
+    // console.log('globalCeils colors--->', newGlobalColors);
+
+    if (windowGrowing) {
+      // console.log('Window is growing--->', windowGrowing);
+      const saved = localStorage.getItem('globalCeilsColors');
+      // console.log('Saved--->', saved);
+      if (saved) {
+        newGlobalColors = JSON.parse(saved);
+      } else {
+        newGlobalColors = globalCeilsColors;
+      }
+    } else {
+      // console.log('Window shrinking--->');
+      localStorage.setItem(
+        'globalCeilsColors',
+        JSON.stringify(globalCeilsColors)
+      );
+      newGlobalColors = globalCeilsColors;
+    }
+
+    const globalRowSize = newGlobalColors.length;
     const rowDiference = verticalCeilsTotalAux - globalRowSize;
-    const totalRows = globalRowSize + rowDiference; // Porque rowDiference es negativo entonces sumo
-    const newGlobalColors =
-      rowDiference > 0
-        ? [
-            ...globalCeilsColors,
-            ...Array.from({ length: rowDiference }).map((_) => {
-              return Array.from({ length: 100 }, () => 'white');
-            }),
-          ]
-        : globalCeilsColors.slice(0, totalRows);
+
+    if (rowDiference > 0) {
+      newGlobalColors = [
+        ...newGlobalColors,
+        ...Array.from({ length: rowDiference }).map((_) => {
+          return Array.from({ length: 100 }, () => 'white');
+        }),
+      ];
+    } else if (rowDiference < 0) {
+      const totalRows = globalRowSize + rowDiference; // Porque rowDiference es negativo entonces sumo
+      newGlobalColors = newGlobalColors.slice(0, totalRows);
+    }
 
     setGlobalCeilsColors(newGlobalColors);
-  }, []);
+  }, [globalCeilsColors]);
+
+  useEffect(() => {
+    calculateTotalCeilsRef.current = calculateTotalCeils;
+  }, [calculateTotalCeils]);
 
   // Logica para recalcular el lienzo cuando se redimenciona la pantalla
-  // TODO -> tengo que mantener los que ya estan coloreados, no borrar todos -> guardar en localstorage en caso de "achicar y agrandar"
   useEffect(() => {
     calculateTotalCeils();
-    window.addEventListener('resize', calculateTotalCeils);
-    return () => window.removeEventListener('resize', calculateTotalCeils);
+    window.addEventListener('resize', debouncedResize);
+    return () => window.removeEventListener('resize', debouncedResize);
   }, []);
 
   // Funcion memoizada para optimizar el re-renderizado de los componentes y que funciona para cambiar el color de las celdas
