@@ -1,0 +1,53 @@
+@import 'tailwindcss';
+/* src/index.css */
+@import 'tailwindcss/preflight' @tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded font-semibold text-white bg-[#1165EC] hover:bg-[#0e5bd1] transition;
+  }
+  .btn-outlined {
+    @apply px-4 py-2 rounded font-semibold text-[#1165EC] bg-white border border-[#1165EC] hover:bg-[#f0f7ff] transition;
+  }
+  .title {
+    @apply text-2xl font-[700];
+  }
+  .ceil {
+    @apply border border-gray-500 w-[1vw] h-[1vw];
+  }
+}
+
+@theme {
+  --animate-wiggle: wiggle 1s ease-in-out infinite;
+
+  @keyframes wiggle {
+    0%,
+    100% {
+      transform: rotate(-3deg);
+    }
+    50% {
+      transform: rotate(3deg);
+    }
+  }
+
+  --animate-fade-in: fadeIn 0.3s ease-in-out forwards;
+  --animate-fade-out: fadeOut 0.3s ease-in-out forwards;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+}
