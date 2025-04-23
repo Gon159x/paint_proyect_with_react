@@ -11,8 +11,6 @@ type Props = {
   clickAutoAdjust?: boolean;
 };
 
-// TODO que el click izquierdo no pueda seleccionar colores, solo que saque el picker
-
 /**
  * ColorPicker component
  *
