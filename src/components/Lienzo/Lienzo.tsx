@@ -2,8 +2,9 @@ import { JSX } from 'react';
 import { Ceil } from '../Ceil';
 import { createPortal } from 'react-dom';
 import { ColorPicker } from '../ColorPicker/ColorPicker';
-import { usePickerLogic } from './usePickerLogic';
-import { useCanvasLogic } from './useCanvasLogic';
+import { usePicker } from './usePicker';
+import { useCanvas } from './useCanvas';
+import { FloatingButton } from '../FloatingButton';
 
 type Props = {
   // add props here
@@ -17,20 +18,17 @@ type Props = {
  * @returns {JSX.Element}
  */
 
-// TODO crear boton de limpiar
-// TODO cambiar cursor
-
 export function Lienzo({}: Props): JSX.Element {
   // Hago custom hooks para cumplir de cierta forma con el patron hook/presentacional para division de responsabilidades
 
-  // Hook con logica relacionada a color picker
+  // Hook con logica relacionada a color picker adentro del lienzo
   const {
     handleContextMenu,
     selectedColorRef,
     showColorPicker,
     colorPickerFadeOutFinished,
     colorPickerPos,
-  } = usePickerLogic();
+  } = usePicker();
 
   // Hook con logica relacionada con el canvas completo, su manejo y la creacion de las celdas, etc. Volvi al componente "ceil" lo mas puro e independiente posible para evitar re-renderizados por cuestiones
   // de eficiencia por eso mantengo parte de su logica aca como lo son sus handlers o el color al que se modificara
@@ -40,7 +38,8 @@ export function Lienzo({}: Props): JSX.Element {
     handleCeilClicked,
     setMouseDown,
     handleCeilEntered,
-  } = useCanvasLogic({
+    resetCeilsColors,
+  } = useCanvas({
     selectedColorRef,
   });
 
@@ -48,7 +47,7 @@ export function Lienzo({}: Props): JSX.Element {
     <div
       onClick={handleClicker}
       onContextMenu={handleContextMenu}
-      className="z-0 h-[100vh] overflow-hidden w-[100vw]"
+      className="z-0 h-[100vh] overflow-hidden w-[100vw] cursor-crosshair"
       onMouseDown={() => setMouseDown(true)}
       onMouseUp={() => setMouseDown(false)}
       // onMouseLeave={(e) => console.log('Mouse leave--->', e)}
@@ -62,7 +61,7 @@ export function Lienzo({}: Props): JSX.Element {
             {row.map((color: string, colIndex: number) => {
               return (
                 <Ceil
-                  color={color} // TODO: Ver de sacarlo de alguna forma o renombrarlo a "initial color" o algo por el estilo -> ver la logica por detras y encontrar un nombre mas apropiado
+                  color={color}
                   onClick={handleCeilClicked}
                   row={rowIndex}
                   col={colIndex}
@@ -87,6 +86,14 @@ export function Lienzo({}: Props): JSX.Element {
           />,
           document.body
         )}
+
+      <FloatingButton
+        pr={'16px'}
+        onClick={() => resetCeilsColors()}
+        position="bottom-left"
+      >
+        Limpiar
+      </FloatingButton>
     </div>
   );
 }

@@ -1,9 +1,11 @@
 import { useEffect, useReducer, useRef } from 'react';
+import { useLastMouseButton } from '../../context/MouseContext';
 
 type Params = {
   // definir parámetros del hook
   position: { x: number; y: number };
   clickAutoAdjust?: boolean;
+  setColor: (color: string) => string;
 };
 
 type State = {
@@ -18,8 +20,30 @@ type State = {
  * @param {Params} params - Parámetros del hook
  * @returns {{ state: State, setState: React.Dispatch<React.SetStateAction<State>> }}
  */
-export function useColorPicker({ position, clickAutoAdjust }: Params) {
+export function useColorPicker({
+  position,
+  clickAutoAdjust,
+  setColor,
+}: Params) {
   const colorPickerRef = useRef<HTMLDivElement>(null);
+
+  // Prevenir que el colorPicker seleccione colores con el click izquierdo
+  const getLastClick = useLastMouseButton();
+
+  const handleColorChange = (color: string) => {
+    const lastClick = getLastClick();
+    // console.log('Last click--->', lastClick);
+    if (lastClick === 0) {
+      setColor(color);
+    }
+  };
+
+  const handleClicked = (e: React.PointerEvent) => {
+    if (e.button !== 0) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  };
 
   type Action =
     | { type: 'measured'; payload: { x: number; y: number } }
@@ -71,5 +95,5 @@ export function useColorPicker({ position, clickAutoAdjust }: Params) {
     });
   }, [position, clickAutoAdjust]);
 
-  return { state, colorPickerRef };
+  return { state, colorPickerRef, handleColorChange, handleClicked };
 }

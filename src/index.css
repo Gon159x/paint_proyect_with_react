@@ -4,11 +4,11 @@
 
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded font-semibold text-white bg-[#1165EC] hover:bg-[#0e5bd1] transition;
+    @apply pl-4 py-2 rounded-4xl font-semibold text-white bg-gray-900 transition shadow-lg hover:bg-gray-800;
   }
-  .btn-outlined {
+  /* .btn-outlined {
     @apply px-4 py-2 rounded font-semibold text-[#1165EC] bg-white border border-[#1165EC] hover:bg-[#f0f7ff] transition;
-  }
+  } */
   .title {
     @apply text-2xl font-[700];
   }

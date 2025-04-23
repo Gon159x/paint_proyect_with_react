@@ -6,7 +6,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
  * @param {Params} params - Parámetros del hook
  * @returns {{ state: State, setState: React.Dispatch<React.SetStateAction<State>> }}
  */
-export function usePickerLogic() {
+export function usePicker() {
   const selectedColorRef = useRef<string>('#1106e6');
   const [showColorPicker, setShowColorPickker] = useState<boolean>(false);
   const [colorPickerFadeOutFinished, setColorPickerFadeOutFinished] =
@@ -24,11 +24,11 @@ export function usePickerLogic() {
 
       setShowColorPickker((prevState) => !prevState);
 
-      if (e.type === 'click') {
-        // console.log('Left click');
-      } else if (e.type === 'contextmenu') {
-        // console.log('Right click');
-      }
+      // if (e.type === 'click') {
+      //   console.log('Left click');
+      // } else if (e.type === 'contextmenu') {
+      //   console.log('Right click');
+      // }
     },
     [showColorPicker]
   );
