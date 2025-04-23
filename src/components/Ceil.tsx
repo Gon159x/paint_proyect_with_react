@@ -25,13 +25,13 @@ export const Ceil = memo(function Ceil({
   row,
   col,
 }: Props) {
-  console.log('Re renderizacion-->');
+  // console.log('Re renderizacion-->');
 
   return (
     <div
       onClick={() => onClick(row, col)}
       style={{ backgroundColor: `${color}` }}
-      onMouseEnter={() => onMouseEntered(row, col)}
+      onPointerEnter={() => onMouseEntered(row, col)}
       // onMouseEnter={() => onClick(row, col, 'black')}
       className={`ceil`}
     ></div>
