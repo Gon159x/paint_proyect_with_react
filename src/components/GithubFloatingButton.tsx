@@ -1,6 +1,7 @@
 import { Github } from 'lucide-react';
 import { JSX, useState } from 'react';
 import { PasswordModal } from './PassWordModal';
+import { FloatingButton } from './FloatingButton';
 
 type Props = {
   // add props here
@@ -27,14 +28,17 @@ export function GithubFloatingButton({}: Props): JSX.Element {
 
   return (
     <>
-      <button
+      <FloatingButton
+        pr={'0'}
         onClick={() => setIsOpen(true)}
-        className="btn fixed bottom-4 right-8 flex hover:-traslate-y-1 hover:-rotate-3"
+        position="bottom-right"
       >
         Github
         <Github className="w-12" />
-        {/* dice que github esta deprecated debido a temas que tuvo la libreria con facebook, github, etc me parece */}
-      </button>
+      </FloatingButton>
+
+      {/* dice que github esta deprecated debido a temas que tuvo la libreria con facebook, github, etc me parece */}
+
       <PasswordModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
