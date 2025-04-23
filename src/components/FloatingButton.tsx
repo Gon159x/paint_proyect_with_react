@@ -11,7 +11,7 @@ export function FloatingButton({
   onClick,
   children,
   position = 'bottom-left',
-  pr = '4',
+  pr = '4px',
 }: FloatingButtonProps) {
   const positionClasses: Record<string, string> = {
     'bottom-left': 'bottom-4 left-8',
@@ -20,9 +20,12 @@ export function FloatingButton({
     'top-right': 'top-4 right-8',
   };
 
+  const prClass = `pr-${pr}`; // Agregar la clase pr a la clase del botón
+
   return (
     <button
-      className={`btn fixed ${positionClasses[position]} pr-${pr} z-50 flex hover:-traslate-y-1 hover:-rotate-3`}
+      style={{ paddingRight: `${pr}` }}
+      className={`btn fixed ${positionClasses[position]} ${prClass} z-50 flex hover:-traslate-y-1 hover:-rotate-3`}
       onClick={onClick}
     >
       {children}

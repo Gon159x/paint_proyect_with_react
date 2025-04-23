@@ -3,8 +3,6 @@ import { GithubFloatingButton } from './components/GithubFloatingButton';
 import { Lienzo } from './components/Lienzo/Lienzo';
 import { MouseContextProvider } from './context/MouseContext';
 
-// Todo hacer readme con mis palabras
-// TODO agregar boton de limpiar
 function App() {
   return (
     <>
