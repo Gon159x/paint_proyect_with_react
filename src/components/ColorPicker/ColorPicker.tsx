@@ -29,16 +29,19 @@ export function ColorPicker({
   position,
   clickAutoAdjust = false,
 }: Props): JSX.Element {
-  // Hook con la logica del colorPicker
-  const { state, colorPickerRef } = useColorPicker({
-    position,
-    clickAutoAdjust,
-  });
+  // Hook con la logica interna del colorpicker
+  const { state, colorPickerRef, handleColorChange, handleClicked } =
+    useColorPicker({
+      position,
+      clickAutoAdjust,
+      setColor,
+    });
 
   // Renderizo el componente de forma invisible para poder sacarle los "bounds" a la hora de hacer los calculos de los offset
   if (state.componentState === 'starting')
     return (
       <div
+        onPointerDown={handleClicked}
         ref={colorPickerRef}
         style={{
           position: 'absolute',
@@ -48,12 +51,13 @@ export function ColorPicker({
           visibility: 'hidden',
         }}
       >
-        <HexColorPicker color={selectedColor} onChange={setColor} />
+        <HexColorPicker color={selectedColor} onChange={handleColorChange} />
       </div>
     );
 
   return (
     <div
+      onPointerDown={handleClicked}
       ref={colorPickerRef}
       style={{
         position: 'absolute',
@@ -63,7 +67,7 @@ export function ColorPicker({
       }}
       className={`${visible ? 'animate-fade-in' : 'animate-fade-out'}`}
     >
-      <HexColorPicker color={selectedColor} onChange={setColor} />
+      <HexColorPicker color={selectedColor} onChange={handleColorChange} />
     </div>
   );
 }
