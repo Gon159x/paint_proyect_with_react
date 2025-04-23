@@ -17,7 +17,7 @@ export function usePickerLogic() {
   const handleContextMenu = useCallback(
     (e: any) => {
       e.preventDefault();
-      console.log('Show color picker--->', showColorPicker);
+      // console.log('Show color picker--->', showColorPicker);
       if (!showColorPicker) {
         setColorPickerPos({ x: e.clientX, y: e.clientY });
       }
@@ -25,9 +25,9 @@ export function usePickerLogic() {
       setShowColorPickker((prevState) => !prevState);
 
       if (e.type === 'click') {
-        console.log('Left click');
+        // console.log('Left click');
       } else if (e.type === 'contextmenu') {
-        console.log('Right click');
+        // console.log('Right click');
       }
     },
     [showColorPicker]

@@ -23,8 +23,7 @@ export function useColorPicker({ position, clickAutoAdjust }: Params) {
 
   type Action =
     | { type: 'measured'; payload: { x: number; y: number } }
-    | { type: 'ready' }
-    | { type: 'reset'; payload: { x: number; y: number } };
+    | { type: 'ready' };
 
   // Creo una minitienda para manejar la dependencia de estados, es una tienda porque intenta ser encapsulada y que una accion y estado me devuelva otro estado -> teoria de redux
   // Tuve que hacer un reducer porque hay dependencia de estados -> primero hay que medir y luego mostrar el componente, de otra forma "parpadea" en la posicion inicial y luego se va a la nueva posicion cuando
@@ -39,11 +38,9 @@ export function useColorPicker({ position, clickAutoAdjust }: Params) {
         };
       case 'ready':
         return { ...state, componentState: 'ready' };
-      case 'reset':
-        return { componentState: 'starting', position: action.payload };
+      default:
+        return state;
     }
-
-    return state;
   }
 
   const [state, dispatch] = useReducer(reducer, {
@@ -54,10 +51,10 @@ export function useColorPicker({ position, clickAutoAdjust }: Params) {
   useEffect(() => {
     if (!clickAutoAdjust || !colorPickerRef.current) return;
 
-    console.log(
-      'The div size--->',
-      colorPickerRef.current?.getBoundingClientRect()
-    );
+    // console.log(
+    //   'The div size--->',
+    //   colorPickerRef.current?.getBoundingClientRect()
+    // );
     const offSetX = colorPickerRef.current?.getBoundingClientRect().width ?? 0;
     const offSetY = colorPickerRef.current?.getBoundingClientRect().height ?? 0;
     const portViewWidth = window.innerWidth;
