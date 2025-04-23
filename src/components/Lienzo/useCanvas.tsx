@@ -24,6 +24,12 @@ export function useCanvas({ selectedColorRef }: Params) {
     })
   );
 
+  const resetCeilsColors = useCallback(() => {
+    setGlobalCeilsColors((prevState) =>
+      prevState.map((row) => row.map(() => 'white'))
+    );
+  }, []);
+
   const mouseDown = useRef(false);
 
   const lastButtonClicked = useLastMouseButton();
@@ -130,5 +136,6 @@ export function useCanvas({ selectedColorRef }: Params) {
     setMouseDown,
     handleCeilClicked,
     handleCeilEntered,
+    resetCeilsColors,
   };
 }

@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import { ColorPicker } from '../ColorPicker/ColorPicker';
 import { usePicker } from './usePicker';
 import { useCanvas } from './useCanvas';
+import { FloatingButton } from '../FloatingButton';
 
 type Props = {
   // add props here
@@ -40,6 +41,7 @@ export function Lienzo({}: Props): JSX.Element {
     handleCeilClicked,
     setMouseDown,
     handleCeilEntered,
+    resetCeilsColors,
   } = useCanvas({
     selectedColorRef,
   });
@@ -87,6 +89,10 @@ export function Lienzo({}: Props): JSX.Element {
           />,
           document.body
         )}
+
+      <FloatingButton onClick={() => resetCeilsColors()} position="bottom-left">
+        Limpiar
+      </FloatingButton>
     </div>
   );
 }
