@@ -1,4 +1,8 @@
 import { useState, useEffect, useCallback, RefObject, useRef } from 'react';
+import {
+  intermediateCalculations,
+  MatrixIndexs,
+} from '../../utils/matrixFunctions';
 
 type Params = {
   // definir parámetros del hook
@@ -73,22 +77,45 @@ export function useCanvasLogic({ selectedColorRef }: Params) {
     });
   }, []);
 
-  // Funcion memoizada para optimizar el re-renderizado de los componentes y que funciona para cambiar el color de las celdas
-  const handleCeilEntered = useCallback(
-    (row: number, col: number) => {
-      // console.log('Hola', row, col, color);
-      if (mouseDown.current) {
+  // seccion para optimizar el re-renderizado de los componentes y que funciona para cambiar el color de las celdas durante el arrastrado del mouse clickeado
+
+  const lastCeilPainted = useRef<MatrixIndexs | null>(null);
+
+  const handleCeilEntered = useCallback((row: number, col: number) => {
+    // console.log('Hola', row, col, color);
+    if (!mouseDown.current) {
+      lastCeilPainted.current = null;
+      return;
+    }
+
+    if (mouseDown.current) {
+      if (lastCeilPainted.current === null) {
         setGlobalCeilsColors((prevState) => {
           const prevStateCopy = [...prevState];
           const prevStateRowCopy = [...prevStateCopy[row]];
           prevStateRowCopy[col] = selectedColorRef.current;
           prevStateCopy[row] = prevStateRowCopy;
+          lastCeilPainted.current = { row, col };
+          return prevStateCopy;
+        });
+      } else {
+        const newCeils = intermediateCalculations(lastCeilPainted.current, {
+          row,
+          col,
+        });
+        setGlobalCeilsColors((prevState) => {
+          const prevStateCopy = [...prevState];
+          newCeils.forEach((ceil) => {
+            const prevStateRowCopy = [...prevStateCopy[ceil.row]];
+            prevStateRowCopy[ceil.col] = selectedColorRef.current;
+            prevStateCopy[ceil.row] = prevStateRowCopy;
+          });
+          lastCeilPainted.current = { row, col };
           return prevStateCopy;
         });
       }
-    },
-    [mouseDown]
-  );
+    }
+  }, []);
 
   return {
     handleClicker,
