@@ -1,3 +1,6 @@
+import { useMemo } from 'react';
+import { useAppContext } from '../context/AppContext';
+
 // components/FloatingButton.tsx
 type FloatingButtonProps = {
   onClick: () => void;
@@ -30,10 +33,28 @@ export function FloatingButton({
     'top-right': 'top-4 right-8',
   };
 
+  const { uiVisible, loadingPage } = useAppContext();
+
+  const showButton = useMemo(() => {
+    if (uiVisible) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [uiVisible]);
+
+  if (loadingPage) {
+    return null; // No renderizar el botón si loadingPage es true
+  }
+
   return (
     <button
       style={{ paddingRight: `${pr}`, paddingLeft: `${pl}`, borderRadius }}
-      className={`btn fixed ${positionClasses[position]} z-50 flex hover:-traslate-y-1 hover:-rotate-3`}
+      className={`btn fixed ${
+        showButton ? 'animate-fade-in' : 'animate-fade-out'
+      }   ${
+        positionClasses[position]
+      } z-50 flex hover:-traslate-y-1 hover:-rotate-3`}
       onClick={onClick}
     >
       {children}
