@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import { useLastMouseButton } from '../../context/MouseContext';
 import { useAppContext } from '../../context/AppContext';
 
@@ -31,6 +31,14 @@ export function useColorPicker({
   setColor,
 }: Params) {
   const colorPickerRef = useRef<HTMLDivElement>(null);
+
+  const [firstRender, setFirstRender] = useState(true);
+
+  useEffect(() => {
+    if (visible && firstRender) {
+      setFirstRender(false);
+    }
+  }, [visible, firstRender]);
 
   // Prevenir que el colorPicker seleccione colores con el click izquierdo
   const getLastClick = useLastMouseButton();
@@ -120,5 +128,11 @@ export function useColorPicker({
     });
   }, [position, clickAutoAdjust]);
 
-  return { state, colorPickerRef, handleColorChange, handleClicked };
+  return {
+    state,
+    colorPickerRef,
+    firstRender,
+    handleColorChange,
+    handleClicked,
+  };
 }
