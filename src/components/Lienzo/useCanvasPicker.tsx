@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
 
 /**
  * Custom hook usePickerLogic
@@ -6,11 +6,10 @@ import { useState, useEffect, useRef, useCallback } from 'react';
  * @param {Params} params - Parámetros del hook
  * @returns {{ state: State, setState: React.Dispatch<React.SetStateAction<State>> }}
  */
-export function usePicker() {
+export function useCanvasPicker() {
   const selectedColorRef = useRef<string>('#1106e6');
   const [showColorPicker, setShowColorPickker] = useState<boolean>(false);
-  const [colorPickerFadeOutFinished, setColorPickerFadeOutFinished] =
-    useState(true);
+
   const [colorPickerPos, setColorPickerPos] = useState({ x: 0, y: 0 });
 
   // Control de el context menu ( boton derecho )
@@ -34,25 +33,27 @@ export function usePicker() {
   );
 
   // Control de animacion para desaparecer por completo el colorPicker
-  useEffect(() => {
-    let timeOutId: number;
+  // useEffect(() => {
+  //   let timeOutId: NodeJS.Timeout | null = null;
 
-    if (showColorPicker) {
-      setColorPickerFadeOutFinished(false);
-    } else {
-      timeOutId = setTimeout(() => {
-        setColorPickerFadeOutFinished(true);
-      }, 300); // Coordinar con la variable definida de la clase fade-in-out de index.css
-    }
+  //   if (showColorPicker) {
+  //     setColorPickerFadeOutFinished(false);
+  //   } else {
+  //     timeOutId = setTimeout(() => {
+  //       setColorPickerFadeOutFinished(true);
+  //     }, 300); // Coordinar con la variable definida de la clase fade-in-out de index.css
+  //   }
 
-    return () => clearInterval(timeOutId);
-  }, [showColorPicker]);
+  //   return () => {
+  //     if (timeOutId) clearInterval(timeOutId);
+  //   };
+  // }, [showColorPicker]);
 
   return {
     handleContextMenu,
     selectedColorRef,
     showColorPicker,
-    colorPickerFadeOutFinished,
+    // colorPickerFadeOutFinished, Eliminado ya que hice el portal y se maneja por separado, ya no necesito sacar el elemento del DOM
     colorPickerPos,
   };
 }

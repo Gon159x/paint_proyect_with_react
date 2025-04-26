@@ -9,6 +9,7 @@ type Props = {
   visible: boolean;
   position: { x: number; y: number };
   clickAutoAdjust?: boolean;
+  hideUIOnMount?: boolean;
 };
 
 /**
@@ -26,12 +27,15 @@ export function ColorPicker({
   visible,
   position,
   clickAutoAdjust = false,
+  hideUIOnMount = false,
 }: Props): JSX.Element {
   // Hook con la logica interna del colorpicker
   const { state, colorPickerRef, handleColorChange, handleClicked } =
     useColorPicker({
       position,
       clickAutoAdjust,
+      hideUIOnMount,
+      visible,
       setColor,
     });
 

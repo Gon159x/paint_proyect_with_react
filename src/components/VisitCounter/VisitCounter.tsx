@@ -28,7 +28,7 @@ export function VisitCounter() {
       <motion.div
         className="flex items-center justify-center overflow-hidden rounded-full shadow-md "
         animate={{
-          width: loading ? '32px' : '72px',
+          width: loading || error ? '32px' : '72px',
           height: '24px',
           borderRadius: '9999px',
         }}
