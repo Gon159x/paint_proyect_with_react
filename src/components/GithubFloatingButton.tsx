@@ -30,6 +30,7 @@ export function GithubFloatingButton({}: Props): JSX.Element {
     <>
       <FloatingButton
         pr={'0px'}
+        pl="16px"
         onClick={() => setIsOpen(true)}
         position="bottom-right"
       >

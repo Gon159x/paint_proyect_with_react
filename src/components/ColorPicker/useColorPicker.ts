@@ -1,11 +1,14 @@
-import { useEffect, useReducer, useRef } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import { useLastMouseButton } from '../../context/MouseContext';
+import { useAppContext } from '../../context/AppContext';
 
 type Params = {
   // definir parámetros del hook
   position: { x: number; y: number };
   clickAutoAdjust?: boolean;
+  hideUIOnMount?: boolean;
   setColor: (color: string) => string;
+  visible: boolean;
 };
 
 type State = {
@@ -23,9 +26,19 @@ type State = {
 export function useColorPicker({
   position,
   clickAutoAdjust,
+  hideUIOnMount = false,
+  visible,
   setColor,
 }: Params) {
   const colorPickerRef = useRef<HTMLDivElement>(null);
+
+  const [firstRender, setFirstRender] = useState(true);
+
+  useEffect(() => {
+    if (visible && firstRender) {
+      setFirstRender(false);
+    }
+  }, [visible, firstRender]);
 
   // Prevenir que el colorPicker seleccione colores con el click izquierdo
   const getLastClick = useLastMouseButton();
@@ -47,7 +60,8 @@ export function useColorPicker({
 
   type Action =
     | { type: 'measured'; payload: { x: number; y: number } }
-    | { type: 'ready' };
+    | { type: 'ready' }
+    | { type: 'reset' };
 
   // Creo una minitienda para manejar la dependencia de estados, es una tienda porque intenta ser encapsulada y que una accion y estado me devuelva otro estado -> teoria de redux
   // Tuve que hacer un reducer porque hay dependencia de estados -> primero hay que medir y luego mostrar el componente, de otra forma "parpadea" en la posicion inicial y luego se va a la nueva posicion cuando
@@ -62,6 +76,8 @@ export function useColorPicker({
         };
       case 'ready':
         return { ...state, componentState: 'ready' };
+      case 'reset':
+        return { ...state, componentState: 'starting' };
       default:
         return state;
     }
@@ -71,6 +87,23 @@ export function useColorPicker({
     componentState: clickAutoAdjust ? 'starting' : 'ready',
     position: { x: position.x, y: position.y },
   });
+
+  // Desaparecer el UI cuando el componente esta activo, quizas hacer "conocer" el componente a el
+  // contexto global hace el componente menos puro, pero me gusta mas que la idea de manejar si el
+  // componente es visible o no desde el componente padre con logica externa al componente, me parece
+  // un poco mejor encapsulado de esta forma adentro del mismo componente
+  const { hideUI, showUI } = useAppContext();
+
+  useEffect(() => {
+    if (!visible) {
+      dispatch({ type: 'reset' });
+      if (hideUIOnMount) {
+        showUI(2000);
+      }
+    } else {
+      if (hideUIOnMount) hideUI();
+    }
+  }, [visible]);
 
   useEffect(() => {
     if (!clickAutoAdjust || !colorPickerRef.current) return;
@@ -95,5 +128,11 @@ export function useColorPicker({
     });
   }, [position, clickAutoAdjust]);
 
-  return { state, colorPickerRef, handleColorChange, handleClicked };
+  return {
+    state,
+    colorPickerRef,
+    firstRender,
+    handleColorChange,
+    handleClicked,
+  };
 }

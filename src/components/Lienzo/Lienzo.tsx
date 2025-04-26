@@ -2,7 +2,7 @@ import { JSX } from 'react';
 import { Ceil } from '../Ceil';
 import { createPortal } from 'react-dom';
 import { ColorPicker } from '../ColorPicker/ColorPicker';
-import { usePicker } from './usePicker';
+import { useCanvasPicker } from './useCanvasPicker';
 import { useCanvas } from './useCanvas';
 import { FloatingButton } from '../FloatingButton';
 
@@ -26,14 +26,14 @@ export function Lienzo({}: Props): JSX.Element {
     handleContextMenu,
     selectedColorRef,
     showColorPicker,
-    colorPickerFadeOutFinished,
     colorPickerPos,
-  } = usePicker();
+  } = useCanvasPicker();
 
   // Hook con logica relacionada con el canvas completo, su manejo y la creacion de las celdas, etc. Volvi al componente "ceil" lo mas puro e independiente posible para evitar re-renderizados por cuestiones
   // de eficiencia por eso mantengo parte de su logica aca como lo son sus handlers o el color al que se modificara
   const {
-    handleClicker,
+    handlePointerDown,
+    handlePointerUp,
     globalCeilsColors,
     handleCeilClicked,
     setMouseDown,
@@ -41,11 +41,13 @@ export function Lienzo({}: Props): JSX.Element {
     resetCeilsColors,
   } = useCanvas({
     selectedColorRef,
+    showColorPicker,
   });
 
   return (
     <div
-      onClick={handleClicker}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
       onContextMenu={handleContextMenu}
       className="z-0 h-[100vh] overflow-hidden w-[100vw] cursor-crosshair"
       onMouseDown={() => setMouseDown(true)}
@@ -75,20 +77,21 @@ export function Lienzo({}: Props): JSX.Element {
       })}
       {/* el portal es porque quiero separar el nodo del DOM de el div padre para asociarlo con el de body y renderizarlo por "fuera" del div general de este componente para liberar al DOM de calculos 
       de layout por cada frame de animacion y los calculos  de cuando se renderiza el componente del color picker */}
-      {((!showColorPicker && !colorPickerFadeOutFinished) || showColorPicker) &&
-        createPortal(
-          <ColorPicker
-            position={colorPickerPos}
-            setColor={(color: string) => (selectedColorRef.current = color)}
-            selectedColor={selectedColorRef.current}
-            visible={showColorPicker}
-            clickAutoAdjust={true}
-          />,
-          document.body
-        )}
+      {createPortal(
+        <ColorPicker
+          position={colorPickerPos}
+          setColor={(color: string) => (selectedColorRef.current = color)}
+          selectedColor={selectedColorRef.current}
+          visible={showColorPicker}
+          clickAutoAdjust={true}
+          hideUIOnMount={true}
+        />,
+        document.body
+      )}
 
       <FloatingButton
         pr={'16px'}
+        pl="16px"
         onClick={() => resetCeilsColors()}
         position="bottom-left"
       >
