@@ -89,6 +89,7 @@ export function Lienzo({}: Props): JSX.Element {
 
       <FloatingButton
         pr={'16px'}
+        pl="16px"
         onClick={() => resetCeilsColors()}
         position="bottom-left"
       >
