@@ -62,7 +62,7 @@ cd proyecto-paint
 ```
 
 
-  1.1 Cambia de rama en github:
+2. Cambia de rama en github:
 
 ```bash
 git checkout dev
@@ -70,31 +70,31 @@ o
 git checkout prod
 ```
 
- 1.1 Obten los cambios:
+3. Obten los cambios:
 
 ```bash
 git pull
 ```
 
-2. Instalá las dependencias:
+4. Instalá las dependencias:
 
 ```bash
 npm install
 ```
 
-3. Iniciá el servidor de desarrollo:
+5. Iniciá el servidor de desarrollo:
 
 ```bash
 npm run dev
 ```
 
-4. También podés compilarlo con:
+6. También podés compilarlo con:
 
 ```bash
 npm run build
 ```
 
-5. O ver la app compilada localmente con:
+7. O ver la app compilada localmente con:
 
 ```bash
 npm run preview
