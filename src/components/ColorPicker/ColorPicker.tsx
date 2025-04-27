@@ -9,6 +9,7 @@ type Props = {
   visible: boolean;
   position: { x: number; y: number };
   clickAutoAdjust?: boolean;
+  hideUIOnMount?: boolean;
 };
 
 /**
@@ -26,17 +27,25 @@ export function ColorPicker({
   visible,
   position,
   clickAutoAdjust = false,
+  hideUIOnMount = false,
 }: Props): JSX.Element {
   // Hook con la logica interna del colorpicker
-  const { state, colorPickerRef, handleColorChange, handleClicked } =
-    useColorPicker({
-      position,
-      clickAutoAdjust,
-      setColor,
-    });
+  const {
+    state,
+    colorPickerRef,
+    handleColorChange,
+    handleClicked,
+    firstRender,
+  } = useColorPicker({
+    position,
+    clickAutoAdjust,
+    hideUIOnMount,
+    visible,
+    setColor,
+  });
 
   // Renderizo el componente de forma invisible para poder sacarle los "bounds" a la hora de hacer los calculos de los offset
-  if (state.componentState === 'starting')
+  if (state.componentState === 'starting' || firstRender)
     return (
       <div
         onPointerDown={handleClicked}

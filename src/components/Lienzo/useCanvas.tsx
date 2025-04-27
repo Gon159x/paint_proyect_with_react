@@ -5,10 +5,12 @@ import {
 } from '../../utils/matrixFunctions';
 import { useLastMouseButton } from '../../context/MouseContext';
 import { debounce } from '../../utils/debounce';
+import { useAppContext } from '../../context/AppContext';
 
 type Params = {
   // definir parámetros del hook
   selectedColorRef: RefObject<string>; // TODO ver que tipo es realmente
+  showColorPicker: boolean;
 };
 
 /**
@@ -17,13 +19,26 @@ type Params = {
  * @param {Params} params - Parámetros del hook
  * @returns {{ state: State, setState: React.Dispatch<React.SetStateAction<State>> }}
  */
-export function useCanvas({ selectedColorRef }: Params) {
+export function useCanvas({ selectedColorRef, showColorPicker }: Params) {
   //Estados de celdas
   const [globalCeilsColors, setGlobalCeilsColors] = useState<string[][]>(
     Array.from({ length: 0 }).map((_) => {
       return Array.from({ length: 100 }, () => 'white');
     })
   );
+
+  // Cuando dibujo quiero que se esconda el ui, pero creo que ejecutar hideUi cada vez que
+  // dibujo un poco no es positivo, asi que lo pondre cuando se escucha el evento del click
+  const { hideUI, showUI } = useAppContext();
+
+  // Creo una referencia porque no quiero provocar el re-renderizado de las celdas por modificar
+  // su callback
+  const showColorPickerRef = useRef(showColorPicker);
+
+  // Sync siempre que cambie showColorPicker
+  useEffect(() => {
+    showColorPickerRef.current = showColorPicker;
+  }, [showColorPicker]);
 
   const resetCeilsColors = useCallback(() => {
     setGlobalCeilsColors((prevState) =>
@@ -39,8 +54,27 @@ export function useCanvas({ selectedColorRef }: Params) {
     mouseDown.current = value;
   }, []);
 
-  const handleClicker = useCallback(() => {
-    console.log('Clicked');
+  const handlePointerDown = useCallback((e: any) => {
+    // if (showColorPicker) {
+    //   e.stopPropagation();
+    //   e.preventDefault();
+    // }
+    // Problema de coordinacion con el dismount que genera un show del colorPicker
+
+    if (!showColorPickerRef.current && e.button !== 2) {
+      hideUI();
+    }
+  }, []);
+
+  const handlePointerUp = useCallback((e: any) => {
+    // if (showColorPicker) {
+    //   e.stopPropagation();
+    //   e.preventDefault();
+    // }
+
+    if (!showColorPickerRef.current && e.button !== 2) {
+      showUI(2000);
+    }
   }, []);
 
   // Cada vez que se re-renderiza el componente recalculo la cantidad de filas
@@ -79,7 +113,10 @@ export function useCanvas({ selectedColorRef }: Params) {
       const saved = localStorage.getItem('globalCeilsColors');
       // console.log('Saved--->', saved);
       if (saved) {
-        console.log("Si ya se que hay un bug aca pero ya no me da la cabeza para resolverlo por hoy jaj")
+        // Hay un bug tanto cuando se achica-agranda -> ignora cambios, como cuando se achica-achica-agranda  -> borra los cambios viejos de localstorage
+        console.log(
+          'Si ya se que hay un bug aca pero ya no me da la cabeza para resolverlo por hoy jaj'
+        );
         newGlobalColors = JSON.parse(saved);
       } else {
         newGlobalColors = globalCeilsColors;
@@ -126,7 +163,7 @@ export function useCanvas({ selectedColorRef }: Params) {
   const handleCeilClicked = useCallback((row: number, col: number) => {
     // console.log('Hola', row, col, color);
     const lastClick = lastButtonClicked();
-    if (lastClick === 2) return;
+    if (lastClick === 2 || showColorPickerRef.current) return;
 
     setGlobalCeilsColors((prevState) => {
       const prevStateCopy = [...prevState];
@@ -144,7 +181,7 @@ export function useCanvas({ selectedColorRef }: Params) {
   const handleCeilEntered = useCallback((row: number, col: number) => {
     // console.log('Hola', row, col, color);
     const lastClick = lastButtonClicked();
-    if (!mouseDown.current || lastClick === 2) {
+    if (!mouseDown.current || lastClick === 2 || showColorPickerRef.current) {
       lastCeilPainted.current = null;
       return;
     }
@@ -179,7 +216,8 @@ export function useCanvas({ selectedColorRef }: Params) {
   }, []);
 
   return {
-    handleClicker,
+    handlePointerDown,
+    handlePointerUp,
     globalCeilsColors,
     setMouseDown,
     handleCeilClicked,
