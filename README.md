@@ -70,6 +70,12 @@ o
 git checkout prod
 ```
 
+1.6 Obten los cambios:
+
+```bash
+git pull
+```
+
 2. Instalá las dependencias:
 
 ```bash
