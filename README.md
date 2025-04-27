@@ -61,6 +61,15 @@ git clone https://github.com/tu-usuario/proyecto-paint.git
 cd proyecto-paint
 ```
 
+
+1.5 Cambia de rama en github:
+
+```bash
+git checkout dev
+o
+git checkout prod
+```
+
 2. Instalá las dependencias:
 
 ```bash
