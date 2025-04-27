@@ -62,7 +62,7 @@ cd proyecto-paint
 ```
 
 
-1.5 Cambia de rama en github:
+  1.1 Cambia de rama en github:
 
 ```bash
 git checkout dev
@@ -70,7 +70,7 @@ o
 git checkout prod
 ```
 
-1.6 Obten los cambios:
+ 1.1 Obten los cambios:
 
 ```bash
 git pull
